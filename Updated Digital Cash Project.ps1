@@ -196,6 +196,24 @@ write-host "`nUn-Blinded MO2: `nAmount = $($MO2Sig[0]) `nUniqueness String = $($
 write-host "Un-Blinded Signature: `n($($MO2Sig[10..19]))"
 Remove-Item temp.txt
 
+echo "`nYou would like to use the unblinded signed money order with a Merchant. `nThe Merchant verifies the signature."
+new-item temp.txt -ItemType file
+For($i=10; $i -lt 20; $i++) {
+	$($MO2Sig[$i]) > PerlInput.txt
+	$e >> PerlInput.txt
+	$n >> PerlInput.txt
+	perl LargeNumberCalc.pl
+	[int]$temp = Get-Content -path PerlOutput.txt
+	$temp >> temp.txt
+}
+[int32[]]$TestSig = Get-Content -path temp.txt
+Remove-Item temp.txt
+
+For($i=0; $i -lt 10; $i++) {
+	write-host "$($MO2Sig[$i]) = $($TestSig[$i])"
+}
+echo "If the money order values (left) == the calculated signature values (right), the signature is valid."
+
 }
 elseif ($Rand -eq 2) {
 $K2 > PerlInput.txt
