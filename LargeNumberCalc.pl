@@ -9,9 +9,9 @@ sub get_num{
     my $num = shift;
     my $line = shift;
     chomp $num;
-    if($num =~ /(\D)/){
-        warn "Found non-number in input file on line $line: \"$1\", removing non-numbers from line\n";
-        $num =~ s/\D//g;
+    if($num =~ /([^\d-])/){
+        #warn "Found non-number in input file on line $line: \"$1\", removing non-numbers from line\n";
+        $num =~ s/[^\d-]//g;
     }
     return $num;
 }

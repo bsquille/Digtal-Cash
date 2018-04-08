@@ -71,16 +71,16 @@ perl LargeNumberCalc.pl
 echo "`nPausing for Perl to calculate"
 pause
 [int]$BlFa = Get-Content -path PerlOutput.txt
-#echo "$BlFa" 
 [int]$US1 = 1
 [int32[]]$MO1 = $Amount, $US1 + $I11 + $I12
-#echo "MO1 equals $MO1"
+write-host "`nMO1: `nAmount = $($MO1[0]) `nUniqueness String = $($MO1[1]) `nI11 = $($MO1[2..5]) `nI12 = $($MO1[6..9])"
 new-item temp.txt -ItemType file
 For($i=0; $i -lt $MO1.length; $i++) {
 	(($MO1[$i] * $BlFa) % $n) >> temp.txt
 }
 [int32[]]$BMO1 = Get-Content -path temp.txt
-echo "`nBlinded first money order $BMO1"
+echo "`nBlinded first money order"
+write-host "Blinded MO1: `nAmount = $($BMO1[0]) `nUniqueness String = $($BMO1[1]) `nI11 = $($BMO1[2..5]) `nI12 = $($BMO1[6..9])"
 Remove-Item temp.txt
 
 $K2 > PerlInput.txt
@@ -92,20 +92,21 @@ pause
 [int]$BlFa = Get-Content -path PerlOutput.txt
 [int]$US2 = 2
 [int32[]]$MO2 = $Amount, $US2 + $I21 + $I22
-#echo "MO2 equals $MO2"
+write-host "`nMO2: `nAmount = $($MO2[0]) `nUniqueness String = $($MO2[1]) `nI21 = $($MO2[2..5]) `nI22 = $($MO2[6..9])"
 new-item temp.txt -ItemType file
 For($i=0; $i -lt $MO2.length; $i++) {
 	(($MO2[$i] * $BlFa) % $n) >> temp.txt
 }
 [int32[]]$BMO2 = Get-Content -path temp.txt
-echo "`nBlinded second money order $BMO2"
+echo "`nBlinded second money order"
+write-host "`nBlinded MO2: `nAmount = $($BMO2[0]) `nUniqueness String = $($BMO2[1]) `nI21 = $($BMO2[2..5]) `nI22 = $($BMO2[6..9])"
 Remove-Item temp.txt
 
 echo "`n##Blinding Money Orders Complete##"
 
 #Unblind Money Order
 #$Rand = Get-Random -minimum 1 -maximum 2
-$Rand = 2
+$Rand = 1
 
 if ($Rand -eq 1) {
 
@@ -128,9 +129,25 @@ For($i=0; $i -lt $BMO1.length; $i++) {
 	(($BMO1[$i] * $BlFa) % $n) >> temp.txt
 }
 [int32[]]$BMO1 = Get-Content -path temp.txt
-echo "`nUnblinded Money Order 1 $BMO1"
+echo "`nUnblinded Money Order One"
+write-host "Un-Blinded MO1: `nAmount = $($BMO1[0]) `nUniqueness String = $($BMO1[1]) `nI11 = $($BMO1[2..5]) `nI12 = $($BMO1[6..9])"
 Remove-Item temp.txt
+echo "You provide: `n(R11, R111, R112) = ($R11, $R111, $R112) `n(S11, S111, S112) = ($S11, $S111, $S112) `n(R12, R121, R122) = ($R12, $R121, $R122) `n(S12, S121, S122) = ($S12, $S121, $S122)"
+echo "`nBank calculates and verifies"
+[int]$temp = $R11 -bxor $R111 -bxor $R112
+echo "$($I11[0..1]) = [$temp, $($I11[1])]"
+[int]$temp = $S11 -bxor $S111 -bxor $S112
+echo "$($I11[2..3]) = [$temp, $($I11[3])]"
+[int]$temp = $R12 -bxor $R121 -bxor $R122
+echo "$($I12[0..1]) = [$temp, $($I12[1])]"
+[int]$temp = $S12 -bxor $S121 -bxor $S122
+echo "$($I12[2..3]) = [$temp, $($I12[3])]"
 
+echo "`nCombine ID:"
+[int]$temp = $R11 -bxor $S11
+echo "[$R11 xor $S11] = $temp (Your ID)"
+[int]$temp = $R12 -bxor $S12
+echo "[$R12 xor $S12] = $temp (Your ID)"
 }
 elseif ($Rand -eq 2) {
 $K2 > PerlInput.txt
@@ -152,9 +169,25 @@ For($i=0; $i -lt $BMO2.length; $i++) {
 	(($BMO2[$i] * $BlFa) % $n) >> temp.txt
 }
 [int32[]]$BMO2 = Get-Content -path temp.txt
-echo "`nUnblinded Money Order 2 $BMO2"
+echo "`nUnblinded Money Order Two"
+write-host "`nUn-Blinded MO2: `nAmount = $($BMO2[0]) `nUniqueness String = $($BMO2[1]) `nI21 = $($BMO2[2..5]) `nI22 = $($BMO2[6..9])"
 Remove-Item temp.txt
+echo "`nYou provide: `n(R21, R211, R212) = ($R21, $R211, $R212) `n(S21, S211, S212) = ($S21, $S211, $S212) `n(R22, R221, R222) = ($R22, $R221, $R222) `n(S22, S221, S222) = ($S22, $S221, $S222)"
+echo "`nBank calculates and verifies"
+[int]$temp = $R21 -bxor $R211 -bxor $R212
+echo "$($I21[0..1]) = [$temp, $($I21[1])]"
+[int]$temp = $S21 -bxor $S211 -bxor $S212
+echo "$($I21[2..3]) = [$temp, $($I21[3])]"
+[int]$temp = $R22 -bxor $R221 -bxor $R222
+echo "$($I22[0..1]) = [$temp, $($I22[1])]"
+[int]$temp = $S22 -bxor $S221 -bxor $S222
+echo "$($I22[2..3]) = [$temp, $($I22[3])]"
 
+echo "`nCombine ID:"
+[int]$temp = $R21 -bxor $S21
+echo "[$R21 xor $S21] = $temp (Your ID)"
+[int]$temp = $R22 -bxor $S22
+echo "[$R22 xor $S22] = $temp (Your ID)"
 }
 else { echo "An Error Occurred" }
 
