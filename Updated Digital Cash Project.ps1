@@ -106,7 +106,7 @@ echo "`n##Blinding Money Orders Complete##"
 
 #Unblind Money Order
 #$Rand = Get-Random -minimum 1 -maximum 2
-$Rand = 2
+$Rand = 1
 
 if ($Rand -eq 1) {
 
@@ -214,6 +214,40 @@ For($i=0; $i -lt 10; $i++) {
 }
 echo "If the money order values (left) == the calculated signature values (right), the signature is valid."
 
+echo "`nYou reveal halves"
+#[int]$NBit1 = Get-Random -minimum 0 -maximum 1
+[int]$NBit1 = 0
+#[int]$NBit2 = Get-Random -minimum 0 -maximum 1
+[int]$NBit2 = 1
+
+if ($Nbit1 -eq 0) {
+	echo "`nYou Provide ($R21, $R211, $R212)"
+	[int]$temp = ($R21 -bxor $R211 -bxor $R212)
+	write-host "Merchant verifies $temp, $R211 = $I21L"
+	echo "Reveal I21L = $R21"
+	}
+elseif ($Nbit1 -eq 1) {
+	echo "`nYou Provide ($S21, $S211, $S212)"
+	[int]$temp = ($S21 -bxor $S211 -bxor $S212)
+	write-host "Merchant verifies $temp, $S211 = $I21R"
+	echo "Reveal I21R = $S21"
+	}
+else { echo "An error occurred" }
+
+if ($Nbit2 -eq 0) {
+	echo "`nYou Provide ($R22, $R221, $R222)"
+	[int]$temp = ($R22 -bxor $R221 -bxor $R222)
+	write-host "Merchant verifies $temp, $R221 = $I22L"
+	echo "Reveal I22L = $R22"
+	}
+elseif ($Nbit2 -eq 1) {
+	echo "`nYou Provide ($S22, $S221, $S222)"
+	[int]$temp = ($S22 -bxor $S221 -bxor $S222)
+	write-host "Merchant verifies $temp, $S221 = $I22R"
+	echo "Reveal I22R = $S22"
+	}
+else { echo "An error occurred" }
+
 }
 elseif ($Rand -eq 2) {
 $K2 > PerlInput.txt
@@ -318,8 +352,41 @@ Remove-Item temp.txt
 For($i=0; $i -lt 10; $i++) {
 	write-host "$($MO1Sig[$i]) = $($TestSig[$i])"
 }
-echo "If the money order values (left) == the calculated signature values (right), the signature is valid."
+echo "`nIf the money order values (left) == the calculated signature values (right), the signature is valid."
 
+echo "`nYou reveal halves"
+#[int]$NBit1 = Get-Random -minimum 0 -maximum 1
+[int]$NBit1 = 0
+#[int]$NBit2 = Get-Random -minimum 0 -maximum 1
+[int]$NBit2 = 1
+
+if ($Nbit1 -eq 0) {
+	echo "`nYou Provide ($R11, $R111, $R112)"
+	[int]$temp = ($R11 -bxor $R111 -bxor $R112)
+	write-host "Merchant verifies $temp, $R111 = $I11L"
+	echo "Reveal I11L = $R11"
+	}
+elseif ($Nbit1 -eq 1) {
+	echo "`nYou Provide ($S11, $S111, $S112)"
+	[int]$temp = ($S11 -bxor $S111 -bxor $S112)
+	write-host "Merchant verifies $temp, $S111 = $I11R"
+	echo "Reveal I11R = $S11"
+	}
+else { echo "An error occurred" }
+
+if ($Nbit2 -eq 0) {
+	echo "`nYou Provide ($R12, $R121, $R122)"
+	[int]$temp = ($R12 -bxor $R121 -bxor $R122)
+	write-host "Merchant verifies $temp, $R121 = $I12L"
+	echo "Reveal I12L = $R12"
+	}
+elseif ($Nbit2 -eq 1) {
+	echo "`nYou Provide ($S12, $S121, $S122)"
+	[int]$temp = ($S12 -bxor $S121 -bxor $S122)
+	write-host "Merchant verifies $temp, $S121 = $I12R"
+	echo "Reveal I12R = $S12"
+	}
+else { echo "An error occurred" }
 }
 else { echo "An Error Occurred" }
 
