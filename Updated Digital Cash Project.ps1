@@ -106,7 +106,7 @@ echo "`n##Blinding Money Orders Complete##"
 
 #Unblind Money Order
 #$Rand = Get-Random -minimum 1 -maximum 2
-$Rand = 1
+$Rand = 2
 
 if ($Rand -eq 1) {
 
@@ -224,12 +224,14 @@ if ($Nbit1 -eq 0) {
 	echo "`nYou Provide ($R21, $R211, $R212)"
 	[int]$temp = ($R21 -bxor $R211 -bxor $R212)
 	write-host "Merchant verifies $temp, $R211 = $I21L"
+	[int32[]]$NewIDS1 = $I21R + $R21
 	echo "Reveal I21L = $R21"
 	}
 elseif ($Nbit1 -eq 1) {
 	echo "`nYou Provide ($S21, $S211, $S212)"
 	[int]$temp = ($S21 -bxor $S211 -bxor $S212)
 	write-host "Merchant verifies $temp, $S211 = $I21R"
+	[int32[]]$NewIDS1 = $I21L + $S21
 	echo "Reveal I21R = $S21"
 	}
 else { echo "An error occurred" }
@@ -238,15 +240,20 @@ if ($Nbit2 -eq 0) {
 	echo "`nYou Provide ($R22, $R221, $R222)"
 	[int]$temp = ($R22 -bxor $R221 -bxor $R222)
 	write-host "Merchant verifies $temp, $R221 = $I22L"
+	[int32[]]$NewIDS2 = $I22R + $R22
 	echo "Reveal I22L = $R22"
 	}
 elseif ($Nbit2 -eq 1) {
 	echo "`nYou Provide ($S22, $S221, $S222)"
 	[int]$temp = ($S22 -bxor $S221 -bxor $S222)
 	write-host "Merchant verifies $temp, $S221 = $I22R"
+	[int32[]]$NewIDS2 = $I22L + $S22
 	echo "Reveal I22R = $S22"
 	}
 else { echo "An error occurred" }
+
+echo "`nMerchant submits opened money order to the bank `n "
+write-host "`nAmount = $Amount `nUniqueness String = $US1 `nI21 = $($NewIDS1) `nI22 = $($NewIDS2)"
 
 }
 elseif ($Rand -eq 2) {
@@ -364,12 +371,14 @@ if ($Nbit1 -eq 0) {
 	echo "`nYou Provide ($R11, $R111, $R112)"
 	[int]$temp = ($R11 -bxor $R111 -bxor $R112)
 	write-host "Merchant verifies $temp, $R111 = $I11L"
+	[int32[]]$NewIDS1 = $I11R + $R11
 	echo "Reveal I11L = $R11"
 	}
 elseif ($Nbit1 -eq 1) {
 	echo "`nYou Provide ($S11, $S111, $S112)"
 	[int]$temp = ($S11 -bxor $S111 -bxor $S112)
 	write-host "Merchant verifies $temp, $S111 = $I11R"
+	[int32[]]$NewIDS1 = $I11L + $S11
 	echo "Reveal I11R = $S11"
 	}
 else { echo "An error occurred" }
@@ -378,15 +387,21 @@ if ($Nbit2 -eq 0) {
 	echo "`nYou Provide ($R12, $R121, $R122)"
 	[int]$temp = ($R12 -bxor $R121 -bxor $R122)
 	write-host "Merchant verifies $temp, $R121 = $I12L"
+	[int32[]]$NewIDS2 = $I12R + $R12
 	echo "Reveal I12L = $R12"
 	}
 elseif ($Nbit2 -eq 1) {
 	echo "`nYou Provide ($S12, $S121, $S122)"
 	[int]$temp = ($S12 -bxor $S121 -bxor $S122)
 	write-host "Merchant verifies $temp, $S121 = $I12R"
+	[int32[]]$NewIDS2 = $I12L + $S12
 	echo "Reveal I12R = $S12"
 	}
 else { echo "An error occurred" }
+
+echo "`nMerchant submits opened money order to the bank `n "
+write-host "`nAmount = $Amount `nUniqueness String = $US2 `nI11 = $($NewIDS1) `nI12 = $($NewIDS2)"
+
 }
 else { echo "An Error Occurred" }
 
