@@ -1,4 +1,4 @@
-#Constants
+﻿#Constants
 [int]$e = 29
 [int]$n = 571
 [int]$d = 59
@@ -106,7 +106,7 @@ echo "`n##Blinding Money Orders Complete##"
 
 #Unblind Money Order
 #$Rand = Get-Random -minimum 1 -maximum 2
-$Rand = 2
+$Rand = 1
 
 if ($Rand -eq 1) {
 
@@ -165,6 +165,37 @@ echo "`nThe Signature is $Signature"
 [int32[]]$BMO2Sig = $BMO2 + $Signature
 echo "`nBlinded Signed Money Order Two: `nAmount = $($BMO2Sig[0]) `nUniqueness String = $($BMO2Sig[1]) `nI21 = $($BMO2Sig[2..5]) `nI22 = $($BMO2Sig[6..9]) `nSignature: ($($BMO2Sig[10..19]))"
 
+echo "`nYou unblind the signed money order"
+$K2 > PerlInput.txt
+$Inverse >> PerlInput.txt
+$n >> PerlInput.txt
+perl LargeNumberCalc.pl
+#echo "`nPausing for Perl to calculate"
+#pause
+[int]$InvK2 = Get-Content -path PerlOutput.txt 
+$InvK2 > PerlInput.txt
+$e >> PerlInput.txt
+$n >> PerlInput.txt
+perl LargeNumberCalc.pl
+#echo "`nPausing for Perl to calculate"
+#pause
+$BlFa = Get-Content -path PerlOutput.txt
+new-item temp.txt -ItemType file
+For($i=0; $i -lt 10; $i++) {
+	(($BMO2Sig[$i] * $BlFa) % $n) >> temp.txt
+}
+[int32[]]$MO2Sig1 = Get-Content -path temp.txt
+Remove-Item temp.txt
+new-item temp.txt -ItemType file
+For($i=10; $i -lt 20; $i++) {
+	(($BMO2Sig[$i] * $InvK2) % $n) >> temp.txt
+}
+[int32[]]$MO2Sig2 = Get-Content -path temp.txt
+[int32[]]$MO2Sig = $MO2Sig1 + $MO2Sig2
+write-host "`nUn-Blinded MO2: `nAmount = $($MO2Sig[0]) `nUniqueness String = $($MO2Sig[1]) `nI11 = $($MO2Sig[2..5]) `nI12 = $($MO2Sig[6..9])"
+write-host "Un-Blinded Signature: `n($($MO2Sig[10..19]))"
+Remove-Item temp.txt
+
 }
 elseif ($Rand -eq 2) {
 $K2 > PerlInput.txt
@@ -221,6 +252,37 @@ Remove-Item temp.txt
 echo "`nThe Signature is $Signature"
 [int32[]]$BMO1Sig = $BMO1 + $Signature
 echo "`nBlinded Signed Money Order One: `nAmount = $($BMO1Sig[0]) `nUniqueness String = $($BMO1Sig[1]) `nI11 = $($BMO1Sig[2..5]) `nI12 = $($BMO1Sig[6..9]) `nSignature: ($($BMO1Sig[10..19]))"
+
+echo "`nYou unblind the signed money order"
+$K1 > PerlInput.txt
+$Inverse >> PerlInput.txt
+$n >> PerlInput.txt
+perl LargeNumberCalc.pl
+#echo "`nPausing for Perl to calculate"
+#pause
+[int]$InvK1 = Get-Content -path PerlOutput.txt 
+$InvK1 > PerlInput.txt
+$e >> PerlInput.txt
+$n >> PerlInput.txt
+perl LargeNumberCalc.pl
+#echo "`nPausing for Perl to calculate"
+#pause
+$BlFa = Get-Content -path PerlOutput.txt
+new-item temp.txt -ItemType file
+For($i=0; $i -lt 10; $i++) {
+	(($BMO1Sig[$i] * $BlFa) % $n) >> temp.txt
+}
+[int32[]]$MO1Sig1 = Get-Content -path temp.txt
+Remove-Item temp.txt
+new-item temp.txt -ItemType file
+For($i=10; $i -lt 20; $i++) {
+	(($BMO1Sig[$i] * $InvK1) % $n) >> temp.txt
+}
+[int32[]]$MO1Sig2 = Get-Content -path temp.txt
+[int32[]]$MO1Sig = $MO1Sig1 + $MO1Sig2
+write-host "`nUn-Blinded MO1: `nAmount = $($MO1Sig[0]) `nUniqueness String = $($MO1Sig[1]) `nI11 = $($MO1Sig[2..5]) `nI12 = $($MO1Sig[6..9])"
+write-host "Un-Blinded Signature: `n($($MO1Sig[10..19]))"
+Remove-Item temp.txt
 }
 else { echo "An Error Occurred" }
 
