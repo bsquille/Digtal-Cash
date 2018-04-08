@@ -68,8 +68,8 @@ $K1 > PerlInput.txt
 $e >> PerlInput.txt
 $n >> PerlInput.txt
 perl LargeNumberCalc.pl
-echo "`nPausing for Perl to calculate"
-pause
+#echo "`nPausing for Perl to calculate"
+#pause
 [int]$BlFa = Get-Content -path PerlOutput.txt
 [int]$US1 = 1
 [int32[]]$MO1 = $Amount, $US1 + $I11 + $I12
@@ -87,8 +87,8 @@ $K2 > PerlInput.txt
 $e >> PerlInput.txt
 $n >> PerlInput.txt
 perl LargeNumberCalc.pl
-echo "`nPausing for Perl to calculate"
-pause
+#echo "`nPausing for Perl to calculate"
+#pause
 [int]$BlFa = Get-Content -path PerlOutput.txt
 [int]$US2 = 2
 [int32[]]$MO2 = $Amount, $US2 + $I21 + $I22
@@ -106,7 +106,7 @@ echo "`n##Blinding Money Orders Complete##"
 
 #Unblind Money Order
 #$Rand = Get-Random -minimum 1 -maximum 2
-$Rand = 1
+$Rand = 2
 
 if ($Rand -eq 1) {
 
@@ -114,15 +114,15 @@ $K1 > PerlInput.txt
 $Inverse >> PerlInput.txt
 $n >> PerlInput.txt
 perl LargeNumberCalc.pl
-echo "`nPausing for Perl to calculate"
-pause
+#echo "`nPausing for Perl to calculate"
+#pause
 [int]$InvK1 = Get-Content -path PerlOutput.txt 
 $InvK1 > PerlInput.txt
 $e >> PerlInput.txt
 $n >> PerlInput.txt
 perl LargeNumberCalc.pl
-echo "`nPausing for Perl to calculate"
-pause
+#echo "`nPausing for Perl to calculate"
+#pause
 $BlFa = Get-Content -path PerlOutput.txt
 new-item temp.txt -ItemType file
 For($i=0; $i -lt $BMO1.length; $i++) {
@@ -148,21 +148,38 @@ echo "`nCombine ID:"
 echo "[$R11 xor $S11] = $temp (Your ID)"
 [int]$temp = $R12 -bxor $S12
 echo "[$R12 xor $S12] = $temp (Your ID)"
+
+echo "`nBank signs blinded Money Order two"
+new-item temp.txt -ItemType file
+For($i=0; $i -lt $BMO2.length; $i++) {
+	$($BMO2[$i]) > PerlInput.txt
+	$d >> PerlInput.txt
+	$n >> PerlInput.txt
+	perl LargeNumberCalc.pl
+	[int]$temp = Get-Content -path PerlOutput.txt
+	$temp >> temp.txt
+}
+[int32[]]$Signature = Get-Content -path temp.txt
+Remove-Item temp.txt
+echo "`nThe Signature is $Signature"
+[int32[]]$BMO2Sig = $BMO2 + $Signature
+echo "`nBlinded Signed Money Order Two: `nAmount = $($BMO2Sig[0]) `nUniqueness String = $($BMO2Sig[1]) `nI21 = $($BMO2Sig[2..5]) `nI22 = $($BMO2Sig[6..9]) `nSignature: ($($BMO2Sig[10..19]))"
+
 }
 elseif ($Rand -eq 2) {
 $K2 > PerlInput.txt
 $Inverse >> PerlInput.txt
 $n >> PerlInput.txt
 perl LargeNumberCalc.pl
-echo "`nPausing for Perl to calculate"
-pause
+#echo "`nPausing for Perl to calculate"
+#pause
 [int]$InvK2 = Get-Content -path PerlOutput.txt 
 $InvK2 > PerlInput.txt
 $e >> PerlInput.txt
 $n >> PerlInput.txt
 perl LargeNumberCalc.pl
-echo "`nPausing for Perl to calculate"
-pause
+#echo "`nPausing for Perl to calculate"
+#pause
 $BlFa = Get-Content -path PerlOutput.txt
 new-item temp.txt -ItemType file
 For($i=0; $i -lt $BMO2.length; $i++) {
@@ -188,6 +205,22 @@ echo "`nCombine ID:"
 echo "[$R21 xor $S21] = $temp (Your ID)"
 [int]$temp = $R22 -bxor $S22
 echo "[$R22 xor $S22] = $temp (Your ID)"
+
+echo "`nBank signs blinded Money Order one"
+new-item temp.txt -ItemType file
+For($i=0; $i -lt $BMO1.length; $i++) {
+	$($BMO1[$i]) > PerlInput.txt
+	$d >> PerlInput.txt
+	$n >> PerlInput.txt
+	perl LargeNumberCalc.pl
+	[int]$temp = Get-Content -path PerlOutput.txt
+	$temp >> temp.txt
+}
+[int32[]]$Signature = Get-Content -path temp.txt
+Remove-Item temp.txt
+echo "`nThe Signature is $Signature"
+[int32[]]$BMO1Sig = $BMO1 + $Signature
+echo "`nBlinded Signed Money Order One: `nAmount = $($BMO1Sig[0]) `nUniqueness String = $($BMO1Sig[1]) `nI11 = $($BMO1Sig[2..5]) `nI12 = $($BMO1Sig[6..9]) `nSignature: ($($BMO1Sig[10..19]))"
 }
 else { echo "An Error Occurred" }
 
