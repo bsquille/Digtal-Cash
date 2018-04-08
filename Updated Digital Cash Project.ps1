@@ -106,7 +106,7 @@ echo "`n##Blinding Money Orders Complete##"
 
 #Unblind Money Order
 #$Rand = Get-Random -minimum 1 -maximum 2
-$Rand = 1
+$Rand = 2
 
 if ($Rand -eq 1) {
 
@@ -283,6 +283,25 @@ For($i=10; $i -lt 20; $i++) {
 write-host "`nUn-Blinded MO1: `nAmount = $($MO1Sig[0]) `nUniqueness String = $($MO1Sig[1]) `nI11 = $($MO1Sig[2..5]) `nI12 = $($MO1Sig[6..9])"
 write-host "Un-Blinded Signature: `n($($MO1Sig[10..19]))"
 Remove-Item temp.txt
+
+echo "`nYou would like to use the unblinded signed money order with a Merchant. `nThe Merchant verifies the signature."
+new-item temp.txt -ItemType file
+For($i=10; $i -lt 20; $i++) {
+	$($MO1Sig[$i]) > PerlInput.txt
+	$e >> PerlInput.txt
+	$n >> PerlInput.txt
+	perl LargeNumberCalc.pl
+	[int]$temp = Get-Content -path PerlOutput.txt
+	$temp >> temp.txt
+}
+[int32[]]$TestSig = Get-Content -path temp.txt
+Remove-Item temp.txt
+
+For($i=0; $i -lt 10; $i++) {
+	write-host "$($MO1Sig[$i]) = $($TestSig[$i])"
+}
+echo "If the money order values (left) == the calculated signature values (right), the signature is valid."
+
 }
 else { echo "An Error Occurred" }
 
