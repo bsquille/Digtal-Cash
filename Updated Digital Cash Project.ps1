@@ -1,4 +1,8 @@
-﻿#Constants
+﻿#COSC 274
+#Project 3 - Digital Cash
+#Brad Squillets and Lev Berzon-Kozlov
+
+#Constants
 [int]$e = 29
 [int]$n = 571
 [int]$d = 59
