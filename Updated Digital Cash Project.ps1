@@ -68,11 +68,12 @@ $K1 > PerlInput.txt
 $e >> PerlInput.txt
 $n >> PerlInput.txt
 perl LargeNumberCalc.pl
-#echo "`nPausing for Perl to calculate"
-#pause
+
 [int]$BlFa = Get-Content -path PerlOutput.txt
 [int]$US1 = 1
 [int32[]]$MO1 = $Amount, $US1 + $I11 + $I12
+$temp = $MO1
+echo $temp > Output/MoneyOrder1.txt
 write-host "`nMO1: `nAmount = $($MO1[0]) `nUniqueness String = $($MO1[1]) `nI11 = $($MO1[2..5]) `nI12 = $($MO1[6..9])"
 new-item temp.txt -ItemType file
 For($i=0; $i -lt $MO1.length; $i++) {
@@ -80,6 +81,8 @@ For($i=0; $i -lt $MO1.length; $i++) {
 }
 [int32[]]$BMO1 = Get-Content -path temp.txt
 echo "`nBlinded first money order"
+$temp = $BMO1
+echo $temp > Output/BlinedMoneyOrder1.txt
 write-host "Blinded MO1: `nAmount = $($BMO1[0]) `nUniqueness String = $($BMO1[1]) `nI11 = $($BMO1[2..5]) `nI12 = $($BMO1[6..9])"
 Remove-Item temp.txt
 
@@ -87,11 +90,11 @@ $K2 > PerlInput.txt
 $e >> PerlInput.txt
 $n >> PerlInput.txt
 perl LargeNumberCalc.pl
-#echo "`nPausing for Perl to calculate"
-#pause
 [int]$BlFa = Get-Content -path PerlOutput.txt
 [int]$US2 = 2
-[int32[]]$MO2 = $Amount, $US2 + $I21 + $I22
+[int32[]]$MO2 = $Amount, $US1 + $I21 + $I22
+$temp = $MO2
+echo $temp > Output/MoneyOrder2.txt
 write-host "`nMO2: `nAmount = $($MO2[0]) `nUniqueness String = $($MO2[1]) `nI21 = $($MO2[2..5]) `nI22 = $($MO2[6..9])"
 new-item temp.txt -ItemType file
 For($i=0; $i -lt $MO2.length; $i++) {
@@ -99,6 +102,8 @@ For($i=0; $i -lt $MO2.length; $i++) {
 }
 [int32[]]$BMO2 = Get-Content -path temp.txt
 echo "`nBlinded second money order"
+$temp = $BMO2
+echo $temp > Output/BlindedMoneyOrder2.txt
 write-host "`nBlinded MO2: `nAmount = $($BMO2[0]) `nUniqueness String = $($BMO2[1]) `nI21 = $($BMO2[2..5]) `nI22 = $($BMO2[6..9])"
 Remove-Item temp.txt
 
@@ -114,15 +119,11 @@ $K1 > PerlInput.txt
 $Inverse >> PerlInput.txt
 $n >> PerlInput.txt
 perl LargeNumberCalc.pl
-#echo "`nPausing for Perl to calculate"
-#pause
 [int]$InvK1 = Get-Content -path PerlOutput.txt 
 $InvK1 > PerlInput.txt
 $e >> PerlInput.txt
 $n >> PerlInput.txt
 perl LargeNumberCalc.pl
-#echo "`nPausing for Perl to calculate"
-#pause
 $BlFa = Get-Content -path PerlOutput.txt
 new-item temp.txt -ItemType file
 For($i=0; $i -lt $BMO1.length; $i++) {
@@ -130,6 +131,8 @@ For($i=0; $i -lt $BMO1.length; $i++) {
 }
 [int32[]]$BMO1 = Get-Content -path temp.txt
 echo "`nUnblinded Money Order One"
+$temp = $BMO1
+echo $temp > Output/UnBlindedMoneyOrder1.txt
 write-host "Un-Blinded MO1: `nAmount = $($BMO1[0]) `nUniqueness String = $($BMO1[1]) `nI11 = $($BMO1[2..5]) `nI12 = $($BMO1[6..9])"
 Remove-Item temp.txt
 echo "You provide: `n(R11, R111, R112) = ($R11, $R111, $R112) `n(S11, S111, S112) = ($S11, $S111, $S112) `n(R12, R121, R122) = ($R12, $R121, $R122) `n(S12, S121, S122) = ($S12, $S121, $S122)"
@@ -162,7 +165,9 @@ For($i=0; $i -lt $BMO2.length; $i++) {
 [int32[]]$Signature = Get-Content -path temp.txt
 Remove-Item temp.txt
 echo "`nThe Signature is $Signature"
-[int32[]]$BMO2Sig = $BMO2 + $Signature
+[int32[]]$BMO2Sig = $($BMO2) + $Signature
+[int32[]]$temp = $($BMO2Sig)
+echo $temp > Output/BlinedSignedMoneyOrder2.txt
 echo "`nBlinded Signed Money Order Two: `nAmount = $($BMO2Sig[0]) `nUniqueness String = $($BMO2Sig[1]) `nI21 = $($BMO2Sig[2..5]) `nI22 = $($BMO2Sig[6..9]) `nSignature: ($($BMO2Sig[10..19]))"
 
 echo "`nYou unblind the signed money order"
@@ -170,15 +175,11 @@ $K2 > PerlInput.txt
 $Inverse >> PerlInput.txt
 $n >> PerlInput.txt
 perl LargeNumberCalc.pl
-#echo "`nPausing for Perl to calculate"
-#pause
 [int]$InvK2 = Get-Content -path PerlOutput.txt 
 $InvK2 > PerlInput.txt
 $e >> PerlInput.txt
 $n >> PerlInput.txt
 perl LargeNumberCalc.pl
-#echo "`nPausing for Perl to calculate"
-#pause
 $BlFa = Get-Content -path PerlOutput.txt
 new-item temp.txt -ItemType file
 For($i=0; $i -lt 10; $i++) {
@@ -191,7 +192,9 @@ For($i=10; $i -lt 20; $i++) {
 	(($BMO2Sig[$i] * $InvK2) % $n) >> temp.txt
 }
 [int32[]]$MO2Sig2 = Get-Content -path temp.txt
-[int32[]]$MO2Sig = $MO2Sig1 + $MO2Sig2
+[int32[]]$MO2Sig = $($MO2Sig1) + $($MO2Sig2)
+[int32[]]$temp = $($MO2Sig)
+echo $temp > Output/UnBlindedSignedMoneyOrder2.txt
 write-host "`nUn-Blinded MO2: `nAmount = $($MO2Sig[0]) `nUniqueness String = $($MO2Sig[1]) `nI11 = $($MO2Sig[2..5]) `nI12 = $($MO2Sig[6..9])"
 write-host "Un-Blinded Signature: `n($($MO2Sig[10..19]))"
 Remove-Item temp.txt
@@ -253,6 +256,11 @@ elseif ($Nbit2 -eq 1) {
 else { echo "An error occurred" }
 
 echo "`nMerchant submits opened money order to the bank `n "
+[int32[]]$temp = $Amount 
+$temp += $US1
+$temp += $($NewIDS1)
+$temp += $($NewIDS2)
+echo $temp > Output/OpenedMoneyOrderForBank.txt
 write-host "`nAmount = $Amount `nUniqueness String = $US1 `nI21 = $($NewIDS1) `nI22 = $($NewIDS2)"
 
 }
@@ -261,15 +269,13 @@ $K2 > PerlInput.txt
 $Inverse >> PerlInput.txt
 $n >> PerlInput.txt
 perl LargeNumberCalc.pl
-#echo "`nPausing for Perl to calculate"
-#pause
+
 [int]$InvK2 = Get-Content -path PerlOutput.txt 
 $InvK2 > PerlInput.txt
 $e >> PerlInput.txt
 $n >> PerlInput.txt
 perl LargeNumberCalc.pl
-#echo "`nPausing for Perl to calculate"
-#pause
+
 $BlFa = Get-Content -path PerlOutput.txt
 new-item temp.txt -ItemType file
 For($i=0; $i -lt $BMO2.length; $i++) {
@@ -277,6 +283,8 @@ For($i=0; $i -lt $BMO2.length; $i++) {
 }
 [int32[]]$BMO2 = Get-Content -path temp.txt
 echo "`nUnblinded Money Order Two"
+$temp = $BMO2
+echo "$temp" > Output/UnBlindedMoneyOrder2.txt
 write-host "`nUn-Blinded MO2: `nAmount = $($BMO2[0]) `nUniqueness String = $($BMO2[1]) `nI21 = $($BMO2[2..5]) `nI22 = $($BMO2[6..9])"
 Remove-Item temp.txt
 echo "`nYou provide: `n(R21, R211, R212) = ($R21, $R211, $R212) `n(S21, S211, S212) = ($S21, $S211, $S212) `n(R22, R221, R222) = ($R22, $R221, $R222) `n(S22, S221, S222) = ($S22, $S221, $S222)"
@@ -310,6 +318,8 @@ For($i=0; $i -lt $BMO1.length; $i++) {
 Remove-Item temp.txt
 echo "`nThe Signature is $Signature"
 [int32[]]$BMO1Sig = $BMO1 + $Signature
+[int32[]]$temp = $($BMO1Sig)
+echo $temp > Output/BlindedSignedMoneyOrder1.txt
 echo "`nBlinded Signed Money Order One: `nAmount = $($BMO1Sig[0]) `nUniqueness String = $($BMO1Sig[1]) `nI11 = $($BMO1Sig[2..5]) `nI12 = $($BMO1Sig[6..9]) `nSignature: ($($BMO1Sig[10..19]))"
 
 echo "`nYou unblind the signed money order"
@@ -317,15 +327,11 @@ $K1 > PerlInput.txt
 $Inverse >> PerlInput.txt
 $n >> PerlInput.txt
 perl LargeNumberCalc.pl
-#echo "`nPausing for Perl to calculate"
-#pause
 [int]$InvK1 = Get-Content -path PerlOutput.txt 
 $InvK1 > PerlInput.txt
 $e >> PerlInput.txt
 $n >> PerlInput.txt
 perl LargeNumberCalc.pl
-#echo "`nPausing for Perl to calculate"
-#pause
 $BlFa = Get-Content -path PerlOutput.txt
 new-item temp.txt -ItemType file
 For($i=0; $i -lt 10; $i++) {
@@ -339,6 +345,8 @@ For($i=10; $i -lt 20; $i++) {
 }
 [int32[]]$MO1Sig2 = Get-Content -path temp.txt
 [int32[]]$MO1Sig = $MO1Sig1 + $MO1Sig2
+[int32[]]$temp = $($MO1Sig)
+echo $temp > Output/UnBlindedSignedMoneyOrder1.txt
 write-host "`nUn-Blinded MO1: `nAmount = $($MO1Sig[0]) `nUniqueness String = $($MO1Sig[1]) `nI11 = $($MO1Sig[2..5]) `nI12 = $($MO1Sig[6..9])"
 write-host "Un-Blinded Signature: `n($($MO1Sig[10..19]))"
 Remove-Item temp.txt
@@ -400,6 +408,11 @@ elseif ($Nbit2 -eq 1) {
 else { echo "An error occurred" }
 
 echo "`nMerchant submits opened money order to the bank `n "
+[int32[]]$temp = $Amount 
+$temp += $US2
+$temp += $($NewIDS1)
+$temp += $($NewIDS2)
+echo $temp > Output/OpenedMoneyOrderForBank.txt
 write-host "`nAmount = $Amount `nUniqueness String = $US2 `nI11 = $($NewIDS1) `nI12 = $($NewIDS2)"
 
 }
