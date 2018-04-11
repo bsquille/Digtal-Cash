@@ -120,7 +120,7 @@ echo "`n##Blinding Money Orders Complete##"
 
 
 #Unblinding the Money Orders
-echo "'nBank enters which Money Order to unblind"
+echo "`nBank enters which Money Order to unblind (1 or 2)"
 $Rand = Read-Host
 #$Rand = 2
 
