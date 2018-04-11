@@ -82,7 +82,7 @@ For($i=0; $i -lt $MO1.length; $i++) {
 [int32[]]$BMO1 = Get-Content -path temp.txt
 echo "`nBlinded first money order"
 $temp = $BMO1
-echo $temp > Output/BlinedMoneyOrder1.txt
+echo $temp > Output/BlindedMoneyOrder1.txt
 write-host "Blinded MO1: `nAmount = $($BMO1[0]) `nUniqueness String = $($BMO1[1]) `nI11 = $($BMO1[2..5]) `nI12 = $($BMO1[6..9])"
 Remove-Item temp.txt
 
@@ -167,7 +167,7 @@ Remove-Item temp.txt
 echo "`nThe Signature is $Signature"
 [int32[]]$BMO2Sig = $($BMO2) + $Signature
 [int32[]]$temp = $($BMO2Sig)
-echo $temp > Output/BlinedSignedMoneyOrder2.txt
+echo $temp > Output/BlindedSignedMoneyOrder2.txt
 echo "`nBlinded Signed Money Order Two: `nAmount = $($BMO2Sig[0]) `nUniqueness String = $($BMO2Sig[1]) `nI21 = $($BMO2Sig[2..5]) `nI22 = $($BMO2Sig[6..9]) `nSignature: ($($BMO2Sig[10..19]))"
 
 echo "`nYou unblind the signed money order"
