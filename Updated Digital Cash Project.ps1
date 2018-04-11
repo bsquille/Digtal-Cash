@@ -30,7 +30,7 @@
 [int]$K1 = 87
 [int]$K2 = 28
 
-#Secret Splitting
+#Secret Splitting of Hardcoded numbers from above.
 [int]$S11 = $R11 -bxor $ID
 [int]$S12 = $R12 -bxor $ID
 [int]$S21 = $R21 -bxor $ID
@@ -63,12 +63,15 @@ echo "$I21R"
 echo "$I22L"
 echo "$I22R"
 
-#Blind the MOs
+#Blinding the Money Orders
+
+#Using Perl script to calculate large numbers for modulo equations 
 $K1 > PerlInput.txt
 $e >> PerlInput.txt
 $n >> PerlInput.txt
 perl LargeNumberCalc.pl
 
+#Blinding Money Order 1
 [int]$BlFa = Get-Content -path PerlOutput.txt
 [int]$US1 = 1
 [int32[]]$MO1 = $Amount, $US1 + $I11 + $I12
@@ -86,10 +89,13 @@ echo $temp > Output/BlindedMoneyOrder1.txt
 write-host "Blinded MO1: `nAmount = $($BMO1[0]) `nUniqueness String = $($BMO1[1]) `nI11 = $($BMO1[2..5]) `nI12 = $($BMO1[6..9])"
 Remove-Item temp.txt
 
+
+#Using Perl script to calculate large numbers for modulo equations
 $K2 > PerlInput.txt
 $e >> PerlInput.txt
 $n >> PerlInput.txt
 perl LargeNumberCalc.pl
+#Blinding Money Order 2
 [int]$BlFa = Get-Content -path PerlOutput.txt
 [int]$US2 = 2
 [int32[]]$MO2 = $Amount, $US1 + $I21 + $I22
@@ -109,9 +115,14 @@ Remove-Item temp.txt
 
 echo "`n##Blinding Money Orders Complete##"
 
-#Unblind Money Order
-#$Rand = Get-Random -minimum 1 -maximum 2
-$Rand = 2
+
+
+
+
+#Unblinding the Money Orders
+echo "'nBank enters which Money Order to unblind"
+$Rand = Read-Host
+#$Rand = 2
 
 if ($Rand -eq 1) {
 
