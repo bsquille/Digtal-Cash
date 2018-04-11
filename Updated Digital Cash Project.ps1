@@ -126,6 +126,7 @@ $Rand = Read-Host
 
 if ($Rand -eq 1) {
 
+#Using Perl script to calculate large numbers for modulo equations
 $K1 > PerlInput.txt
 $Inverse >> PerlInput.txt
 $n >> PerlInput.txt
@@ -135,11 +136,21 @@ $InvK1 > PerlInput.txt
 $e >> PerlInput.txt
 $n >> PerlInput.txt
 perl LargeNumberCalc.pl
+
+#Getting blinding factor from Perl
 $BlFa = Get-Content -path PerlOutput.txt
 new-item temp.txt -ItemType file
+
+#For loop unblinding the blinded money order 1
 For($i=0; $i -lt $BMO1.length; $i++) {
+	
+	
 	(($BMO1[$i] * $BlFa) % $n) >> temp.txt
-}
+		
+	}
+	
+	
+	
 [int32[]]$BMO1 = Get-Content -path temp.txt
 echo "`nUnblinded Money Order One"
 $temp = $BMO1
@@ -165,14 +176,21 @@ echo "[$R12 xor $S12] = $temp (Your ID)"
 
 echo "`nBank signs blinded Money Order two"
 new-item temp.txt -ItemType file
+
+#For loop signing the blinded money order 2
 For($i=0; $i -lt $BMO2.length; $i++) {
+	
+	
 	$($BMO2[$i]) > PerlInput.txt
 	$d >> PerlInput.txt
 	$n >> PerlInput.txt
 	perl LargeNumberCalc.pl
 	[int]$temp = Get-Content -path PerlOutput.txt
 	$temp >> temp.txt
-}
+	
+	
+	
+	}
 [int32[]]$Signature = Get-Content -path temp.txt
 Remove-Item temp.txt
 echo "`nThe Signature is $Signature"
@@ -193,9 +211,15 @@ $n >> PerlInput.txt
 perl LargeNumberCalc.pl
 $BlFa = Get-Content -path PerlOutput.txt
 new-item temp.txt -ItemType file
+
+#For loop unblinding the signed blinded money order 2
 For($i=0; $i -lt 10; $i++) {
+	
+	
 	(($BMO2Sig[$i] * $BlFa) % $n) >> temp.txt
-}
+	
+	
+	}
 [int32[]]$MO2Sig1 = Get-Content -path temp.txt
 Remove-Item temp.txt
 new-item temp.txt -ItemType file
@@ -212,6 +236,8 @@ Remove-Item temp.txt
 
 echo "`nYou would like to use the unblinded signed money order with a Merchant. `nThe Merchant verifies the signature."
 new-item temp.txt -ItemType file
+
+#Merchant is unblinding the signature of Money Order 2
 For($i=10; $i -lt 20; $i++) {
 	$($MO2Sig[$i]) > PerlInput.txt
 	$e >> PerlInput.txt
@@ -234,6 +260,8 @@ echo "`nYou reveal halves"
 #[int]$NBit2 = Get-Random -minimum 0 -maximum 1
 [int]$NBit2 = 1
 
+
+#if and elseif statements to reveal halves
 if ($Nbit1 -eq 0) {
 	echo "`nYou Provide ($R21, $R211, $R212)"
 	[int]$temp = ($R21 -bxor $R211 -bxor $R212)
@@ -276,6 +304,7 @@ write-host "`nAmount = $Amount `nUniqueness String = $US1 `nI21 = $($NewIDS1) `n
 
 }
 elseif ($Rand -eq 2) {
+#Using Perl script to calculate large numbers for modulo equations
 $K2 > PerlInput.txt
 $Inverse >> PerlInput.txt
 $n >> PerlInput.txt
@@ -287,11 +316,19 @@ $e >> PerlInput.txt
 $n >> PerlInput.txt
 perl LargeNumberCalc.pl
 
+#Getting blinding factor from Perl
 $BlFa = Get-Content -path PerlOutput.txt
 new-item temp.txt -ItemType file
+
+#For loop unblinding the blinded money order 2
 For($i=0; $i -lt $BMO2.length; $i++) {
+	
+	
 	(($BMO2[$i] * $BlFa) % $n) >> temp.txt
-}
+	
+	}
+	
+	
 [int32[]]$BMO2 = Get-Content -path temp.txt
 echo "`nUnblinded Money Order Two"
 $temp = $BMO2
@@ -317,6 +354,8 @@ echo "[$R22 xor $S22] = $temp (Your ID)"
 
 echo "`nBank signs blinded Money Order one"
 new-item temp.txt -ItemType file
+
+#For loop signing the blinded money order 1
 For($i=0; $i -lt $BMO1.length; $i++) {
 	$($BMO1[$i]) > PerlInput.txt
 	$d >> PerlInput.txt
@@ -332,6 +371,8 @@ echo "`nThe Signature is $Signature"
 [int32[]]$temp = $($BMO1Sig)
 echo $temp > Output/BlindedSignedMoneyOrder1.txt
 echo "`nBlinded Signed Money Order One: `nAmount = $($BMO1Sig[0]) `nUniqueness String = $($BMO1Sig[1]) `nI11 = $($BMO1Sig[2..5]) `nI12 = $($BMO1Sig[6..9]) `nSignature: ($($BMO1Sig[10..19]))"
+
+#Unblinding the signed money order 1
 
 echo "`nYou unblind the signed money order"
 $K1 > PerlInput.txt
@@ -381,10 +422,10 @@ For($i=0; $i -lt 10; $i++) {
 echo "`nIf the money order values (left) == the calculated signature values (right), the signature is valid."
 
 echo "`nYou reveal halves"
-#[int]$NBit1 = Get-Random -minimum 0 -maximum 1
-[int]$NBit1 = 0
-#[int]$NBit2 = Get-Random -minimum 0 -maximum 1
-[int]$NBit2 = 1
+[int]$NBit1 = Get-Random -minimum 0 -maximum 1
+#[int]$NBit1 = 0
+[int]$NBit2 = Get-Random -minimum 0 -maximum 1
+#[int]$NBit2 = 1
 
 if ($Nbit1 -eq 0) {
 	echo "`nYou Provide ($R11, $R111, $R112)"
